@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
+from dotenv import load_dotenv
 from omegaconf import OmegaConf
 
 
@@ -49,9 +50,9 @@ class QdrantConfig:
 # Embedding 服务配置，对应 YAML 里的 embedding 分组
 @dataclass
 class EmbeddingConfig:
-    host: str
-    port: int
+    base_url: str
     model: str
+    api_key: str
 
 
 # Elasticsearch 配置，对应 YAML 里的 es 分组
@@ -86,6 +87,8 @@ class AppConfig:
 # 从当前文件 app/conf/app_config.py 出发，回到项目根目录
 # 再定位到 conf/app_config.yaml 这个配置文件
 config_file = Path(__file__).parents[2] / 'conf' / 'app_config.yaml'
+
+load_dotenv(Path(__file__).parents[2] / '.env')
 
 # 读取 YAML 配置内容
 context = OmegaConf.load(config_file)

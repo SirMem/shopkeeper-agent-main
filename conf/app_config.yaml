@@ -29,9 +29,9 @@ qdrant:
   embedding_size: 1024
 
 embedding:
-  host: localhost
-  port: 8081
-  model: BAAI/bge-large-zh-v1.5
+  base_url: https://api.siliconflow.cn/v1
+  model: BAAI/bge-large-en-v1.5
+  api_key: ${oc.env:SILICONFLOW_API_KEY,""}
 
 es:
   host: localhost
