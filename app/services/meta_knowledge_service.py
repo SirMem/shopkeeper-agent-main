@@ -280,3 +280,4 @@ class MetaKnowledgeService:
             # 对指标信息建立向量索引
             await self._save_metrics_to_qdrant(metric_infos)
             logger.info("为指标信息建立向量索引成功")
+
