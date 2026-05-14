@@ -10,5 +10,5 @@ class ColumnInfo:
     role: str
     examples: list[Any]
     description: str
-    aliases: list[str]
+    alias: list[str]
     table_id: str

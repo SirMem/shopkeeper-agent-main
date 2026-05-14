@@ -78,12 +78,28 @@ class MetaKnowledgeService:
                     role=column.role,
                     examples=column_values,
                     description=column.description,
-                    aliases=column.alias,
+                    alias=column.alias,
                     table_id=table.name,
                 )
                 column_infos.append(column_info)
 
         async with self.meta_mysql_repository.session.begin():
+            for table_info in table_infos:
+                if await self.meta_mysql_repository.get_table_info_by_id(table_info.id):
+                    logger.warning(
+                        "Meta MySQL 已存在表元数据 {}，跳过表和字段信息写入",
+                        table_info.id,
+                    )
+                    return column_infos
+
+            for column_info in column_infos:
+                if await self.meta_mysql_repository.get_column_info_by_id(column_info.id):
+                    logger.warning(
+                        "Meta MySQL 已存在字段元数据 {}，跳过表和字段信息写入",
+                        column_info.id,
+                    )
+                    return column_infos
+
             self.meta_mysql_repository.save_table_infos(table_infos)
             self.meta_mysql_repository.save_column_infos(column_infos)
 
@@ -113,7 +129,7 @@ class MetaKnowledgeService:
                 }
             )
 
-            for alia in column_info.aliases:
+            for alia in column_info.alias:
                 points.append(
                     {
                         "id": uuid.uuid4(),
@@ -197,7 +213,7 @@ class MetaKnowledgeService:
         column2sync: dict[str, bool] = {}
         for table in meta_config.tables:
             for column in table.columns:
-                 column2sync[f"{column.name}.{column.name}"] = column.sync
+                 column2sync[f"{table.name}.{column.name}"] = column.sync
 
         #获取value_infos作为es插入文档数据
         value_infos: list[ValueInfo] = []
