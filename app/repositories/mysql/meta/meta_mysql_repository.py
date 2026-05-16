@@ -16,6 +16,8 @@ from app.entities.column_metric import ColumnMetric
 from app.entities.metric_info import MetricInfo
 from app.entities.table_info import TableInfo
 from app.models.column_info import ColumnInfoMySQL
+from app.models.column_metric import ColumnMetricMySQL
+from app.models.metric_info import MetricInfoMySQL
 from app.models.table_info import TableInfoMySQL
 from app.repositories.mysql.meta.mappers.column_info_mapper import ColumnInfoMapper
 from app.repositories.mysql.meta.mappers.column_metric_mapper import ColumnMetricMapper
@@ -73,6 +75,26 @@ class MetaMySQLRepository:
         table_info: TableInfoMySQL | None = await self.session.get(TableInfoMySQL, id)
         if table_info:
             return TableInfoMapper.to_entity(table_info)
+        else:
+            return None
+
+    async def get_metric_info_by_id(self, id: str) -> MetricInfo | None:
+        """按指标 id 查询指标元数据，用于避免重复写入指标配置"""
+
+        metric_info: MetricInfoMySQL | None = await self.session.get(MetricInfoMySQL, id)
+        if metric_info:
+            return MetricInfoMapper.to_entity(metric_info)
+        else:
+            return None
+
+    async def get_column_metric(self, column_id: str, metric_id: str) -> ColumnMetric | None:
+        """按联合主键查询字段和指标的关联关系"""
+
+        column_metric: ColumnMetricMySQL | None = await self.session.get(
+            ColumnMetricMySQL, {"column_id": column_id, "metric_id": metric_id}
+        )
+        if column_metric:
+            return ColumnMetricMapper.to_entity(column_metric)
         else:
             return None
 
