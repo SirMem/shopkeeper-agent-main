@@ -14,8 +14,21 @@ from app.repositories.mysql.dw.dw_mysql_repository import DWMySQLRepository
 
 
 async def validate_sql(state: DataAgentState, runtime: Runtime[DataAgentContext]):
-    """校验 SQL，并返回 error 字段控制后续条件分支"""
-
     writer = runtime.stream_writer
-    step = "校验SQL"
-    writer({"type": "progress", "step": step, "status": "running"})
+    writer("校验SQL")
+
+    # 读取 generate_sql 写入状态的 SQL。
+    sql = state["sql"]
+
+    # SQL 可用性必须交给真实数仓判断，这里从运行时 context 中取 DW Repository。
+    dw_mysql_repository: DWMySQLRepository = runtime.context["dw_mysql_repository"]
+
+    try:
+        # validate 内部使用 explain <sql>，只关心数据库能否成功解析这条 SQL。
+        await dw_mysql_repository.validate(sql)
+        logger.info("SQL语法正确")
+        return {"error": None}
+    except Exception as e:
+        # 不直接抛异常，而是把错误信息写入 state，交给条件边判断。
+        logger.info(f"SQL语法错误：{str(e)}")
+        return {"error": str(e)}

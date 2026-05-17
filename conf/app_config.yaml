@@ -11,15 +11,15 @@ logging:
 
 db_meta:
   host: localhost
-  port: 3306
-  user: sirmem
+  port: 13306
+  user: root
   password: 123456
   database: meta
 
 db_dw:
   host: localhost
-  port: 3306
-  user: sirmem
+  port: 13306
+  user: root
   password: 123456
   database: dw
 
@@ -30,7 +30,7 @@ qdrant:
 
 embedding:
   base_url: https://api.siliconflow.cn/v1
-  model: BAAI/bge-large-en-v1.5
+  model: BAAI/bge-large-zh-v1.5
   api_key: ${oc.env:EMBEDDING_API_KEY,""}
 
 es:
@@ -38,8 +38,7 @@ es:
   port: 9200
   index_name: data_agent
 
-#TODO 填上自己的模型API
 llm:
-  model_name: gpt-5.2-codex
-  api_key: <api_key>
-  base_url: https://api.openai-proxy.org/v1
+  model_name: gpt-5.5
+  api_key: ${oc.env:LLM_API_KEY,""}
+  base_url: ${oc.env:LLM_BASE_URL,"https://api.vip1129.cc/v1"}

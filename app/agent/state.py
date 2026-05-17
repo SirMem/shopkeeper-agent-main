@@ -34,6 +34,15 @@ class MetricInfoState(TypedDict):
     relevant_columns: list[str]
     alias: list[str]
 
+class DateInfoState(TypedDict):
+    date: str
+    weekday: str
+    quarter: str
+
+
+class DBInfoState(TypedDict):
+    dialect: str
+    version: str
 
 class DataAgentState(TypedDict):
     query: str #查询用户输入
@@ -45,5 +54,10 @@ class DataAgentState(TypedDict):
 
     table_infos: list[TableInfoState]  # 合并和补齐后的表结构上下文
     metric_infos: list[MetricInfoState]  # 合并后的指标上下文
+
+    date_info: DateInfoState
+    db_info: DBInfoState
+
+    sql: str
 
     error: str  # 校验 SQL 时出现的错误信息

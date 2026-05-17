@@ -108,6 +108,7 @@ if __name__ == "__main__":
                 metric_qdrant_repository=metric_qdrant_repository,
                 value_es_repository=value_es_repository,
                 meta_mysql_repository=meta_mysql_repository,
+                dw_mysql_repository=dw_mysql_repository,
             )
 
             # stream_mode="custom" 会接收各节点通过 runtime.stream_writer 写出的进度信息
